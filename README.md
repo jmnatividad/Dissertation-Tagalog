@@ -94,3 +94,6 @@ ai-dissertation-evaluator/
 ## 📦 Installation
 
 ```bash
+Install Python Python 3.11.9
+run pip install -r requirements.txt
+Dont interupt the installation
