@@ -1,42 +1,93 @@
 from openai import OpenAI
-from config import OPENAI_API_KEY, MODEL_NAME, TEMPERATURE
 import json
+import config
 
-client = OpenAI(api_key=OPENAI_API_KEY)
+client = OpenAI(api_key=config.OPENAI_API_KEY)
 
-def score_chunk(chunk_text):
-    prompt = f"""
-You are a doctoral dissertation evaluator.
+EVALUATION_PROMPT = """
+Ikaw ay isang eksperto sa pagsusuri ng akademikong sanaysay sa Filipino.
 
-Evaluate this dissertation chunk based on:
-1. Clarity
-2. Grammar
-3. Academic Tone
-4. Methodological Rigor
-5. Originality
+Ang iyong gawain ay bigyan ng patas, obhetibo, at mahigpit na marka ang isang bahagi ng sanaysay.
 
-Return ONLY valid JSON:
-{{
-  "clarity": 0-100,
-  "grammar": 0-100,
-  "academic_tone": 0-100,
-  "methodology": 0-100,
-  "originality": 0-100,
-  "overall_score": 0-100,
-  "feedback": "Detailed critique"
-}}
+HUWAG maging maluwag sa pagbibigay ng marka. Batay lamang sa nilalaman ng teksto ang iyong pagsusuri.
 
-TEXT:
-{chunk_text}
+---
+
+PAMANTAYAN SA PAGMAMARKA (Kabuuan = 100):
+
+1. Nilalaman (40%)
+- Kaugnayan sa paksa
+- Lalim ng ideya
+- Pagsuporta sa argumento
+
+2. Organisasyon (25%)
+- Lohikal na pagkakaayos ng ideya
+- Daloy ng talata
+
+3. Gamit ng Wika (20%)
+- Gramatika
+- Estruktura ng pangungusap
+- Kalinawan ng pagpapahayag
+
+4. Mekaniks (15%)
+- Baybay
+- Bantas
+- Tamang gamit ng salita
+
+---
+
+MGA PANUNTUNAN:
+- Ang bawat kategorya ay dapat may tamang score base sa bigat nito
+- Ang kabuuang marka ay ang suma ng lahat ng kategorya
+- Karaniwang sanaysay ng estudyante: 60–75
+- Mahusay na akademikong sulatin: 80–100
+
+---
+
+OUTPUT FORMAT (JSON LAMANG):
+
+{
+  "chunk_id": "id ng chunk",
+  "scores": {
+    "nilalaman": number,
+    "organisasyon": number,
+    "gamit_ng_wika": number,
+    "mekaniks": number
+  },
+  "overall_score": number,
+  "feedback": "Tagalog feedback",
+  "justification": "Maikling paliwanag kung bakit ibinigay ang score"
+}
+
+---
+
+MGA TAGUBILIN:
+- Ang feedback at justification ay dapat nasa wikang Filipino.
+- Huwag lalampas sa 3–5 pangungusap ang feedback.
+- Dapat malinaw, diretso, at may mungkahi para sa pagpapabuti.
+- Ang overall_score ay dapat eksaktong suma ng apat (4) na kategorya:
+  nilalaman + organisasyon + gamit_ng_wika + mekaniks
+- Ang "overall_score" ay ang kabuuang suma ng lahat ng category scores.
+- Ito ay isang (1) value lamang bawat chunk.
+- Hindi ito maaaring i-average o i-scale — eksaktong suma lamang.
+
+FORMULA:
+overall_score = nilalaman + organisasyon + gamit_ng_wika + mekaniks
+
+
+ESSAY:
+\"\"\"{text}\"\"\"
 """
 
+
+def score_chunk(chunk):
     response = client.chat.completions.create(
-        model=MODEL_NAME,
-        temperature=TEMPERATURE,
+        model=config.MODEL_NAME,
         messages=[
-            {"role": "system", "content": "You are an academic dissertation evaluator."},
-            {"role": "user", "content": prompt}
-        ]
+            {"role": "system", "content": "Strict Filipino academic evaluator."},
+            {"role": "user", "content": EVALUATION_PROMPT.format(text=chunk["text"])}
+        ],
+        temperature=0.2
     )
 
     return json.loads(response.choices[0].message.content)

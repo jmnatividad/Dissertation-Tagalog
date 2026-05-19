@@ -1,46 +1,43 @@
-import json
 from modules.pdf_extractor import extract_pdf_text
-from modules.preprocess import preprocess_text
-from modules.chunker import chunk_text
+from modules.preprocess_calamancy import preprocess_text
+from modules.cleaner import clean_text
+from modules.chunker import create_chunks
+from modules.scorer import score_chunk
+from modules.aggregator import aggregate
+from modules.report import save_json
 
-PDF_PATH = "input/dissertation_tagalog.pdf"
-
-def run_test():
-    print("🚀 Starting chunking test pipeline...\n")
+def main():
 
     # 1. Extract PDF
-    pages = extract_pdf_text(PDF_PATH)
-    print(f"✔ Extracted pages: {len(pages)}")
+    pages = extract_pdf_text("input/dissertation.pdf")
 
-    # Debug (optional)
-    print("Sample page text:")
-    print(pages[0]["text"][:300], "\n")
-
-    # 2. Preprocess (calamanCy step)
+    # 2. Calamancy preprocessing
     cleaned_pages = preprocess_text(pages)
-    print("✔ Preprocessing done")
 
-    # Debug cleaned sample
-    print("Cleaned sample:")
-    print(cleaned_pages[0]["cleaned_text"][:300], "\n")
+    # 3. Merge pages
+    merged_text = " ".join([p["cleaned_text"] for p in cleaned_pages])
 
-    # 3. Chunking ONLY
-    chunks = chunk_text(cleaned_pages)
-    print(f"✔ Total chunks created: {len(chunks)}\n")
+    # 4. Clean text
+    final_text = clean_text(merged_text)
 
-    # 4. Save output
-    output_path = "output/chunks.json"
+    # 5. Chunking
+    chunks = create_chunks(final_text)
+    save_json(chunks, "output/chunks.json")
 
-    with open(output_path, "w", encoding="utf-8") as f:
-        json.dump(chunks, f, indent=2, ensure_ascii=False)
+    # # 6. Scoring
+    # scores = []
+    # for c in chunks:
+    #     result = score_chunk(c)
+    #     result["chunk_id"] = c["chunk_id"]
+    #     scores.append(result)
 
-    print(f"✔ Chunks saved to {output_path}")
+    # save_json(scores, "output/scores.json")
 
-    # 5. Show preview of chunks
-    print("\n📦 Chunk Preview:")
-    for i, chunk in enumerate(chunks[:2]):
-        print(f"\n--- Chunk {i+1} ---")
-        print(chunk["text"][:300])
+    # # 7. Aggregate
+    # final = aggregate(scores)
+    # save_json(final, "output/final_report.json")
+
+    # print("DONE - AES Evaluation Complete")
 
 if __name__ == "__main__":
-    run_test()
+    main()

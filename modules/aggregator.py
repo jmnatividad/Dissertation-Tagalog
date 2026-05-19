@@ -1,17 +1,19 @@
-def aggregate_scores(scores):
-    total = {
-        "clarity": 0,
-        "grammar": 0,
-        "academic_tone": 0,
-        "methodology": 0,
-        "originality": 0,
-        "overall_score": 0
+def aggregate(scores):
+    weights = {
+        "nilalaman": 0.40,
+        "organisasyon": 0.25,
+        "gamit_ng_wika": 0.20,
+        "mekaniks": 0.15
     }
 
-    for score in scores:
-        for key in total:
-            total[key] += score[key]
+    total = {}
 
-    count = len(scores)
+    for k in weights:
+        total[k] = sum(s[k] for s in scores) / len(scores)
 
-    return {key: round(value / count, 2) for key, value in total.items()}
+    total["final_score"] = round(
+        sum(total[k] * weights[k] for k in weights),
+        2
+    )
+
+    return total

@@ -1,34 +1,74 @@
-import json
+import argparse
+import os
+
 from modules.pdf_extractor import extract_pdf_text
-from modules.preprocess import preprocess_text
-from modules.chunker import chunk_text
+from modules.preprocess_calamancy import preprocess_text
+from modules.cleaner import clean_text
+from modules.chunker import create_chunks
 from modules.scorer import score_chunk
-from modules.aggregator import aggregate_scores
+from modules.aggregator import aggregate
+from modules.report import save_json
 
-PDF_PATH = "input/dissertation.pdf"
 
-# Extract
-pages = extract_pdf_text(PDF_PATH)
+def run_pipeline(mode):
+    # 1. Extract PDF
+    pages = extract_pdf_text("input/dissertation.pdf")
 
-# Preprocess
-cleaned_pages = preprocess_text(pages)
+    # 2. Preprocess
+    cleaned_pages = preprocess_text(pages)
 
-# Chunk
-chunks = chunk_text(cleaned_pages)
+    # 3. Merge pages
+    merged_text = " ".join([p["cleaned_text"] for p in cleaned_pages])
 
-# Score
-all_scores = []
+    # 4. Clean text
+    final_text = clean_text(merged_text)
 
-for chunk in chunks:
-    score = score_chunk(chunk["text"])
-    all_scores.append(score)
+    # 5. Chunking (always needed)
+    chunks = create_chunks(final_text)
+    save_json(chunks, "output/chunks.json")
 
-# Aggregate
-final_report = aggregate_scores(all_scores)
+    if mode == "chunking":
+        print("DONE - Chunking only")
+        return
 
-# Save
-with open("output/final_report.json", "w", encoding="utf-8") as f:
-    json.dump(final_report, f, indent=4, ensure_ascii=False)
+    # 6. Scoring
+    scores = []
+    for c in chunks:
+        result = score_chunk(c)
+        result["chunk_id"] = c["chunk_id"]
+        scores.append(result)
 
-print("Evaluation Complete!")
-print(final_report)
+    save_json(scores, "output/scores.json")
+
+    if mode == "scoring":
+        print("DONE - Chunking + Scoring only")
+        return
+
+    # 7. Aggregation
+    final = aggregate(scores)
+    save_json(final, "output/final_report.json")
+
+    print("DONE - Full pipeline complete")
+
+
+def main():
+    parser = argparse.ArgumentParser(description="AES Dissertation Pipeline")
+
+    parser.add_argument(
+        "--mode",
+        type=str,
+        default="full",
+        choices=["chunking", "scoring", "full"],
+        help="Pipeline mode to run"
+    )
+
+    args = parser.parse_args()
+
+    # Ensure output folder exists
+    os.makedirs("output", exist_ok=True)
+
+    run_pipeline(args.mode)
+
+
+if __name__ == "__main__":
+    main()

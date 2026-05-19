@@ -1,10 +1,7 @@
 import os
-from dotenv import load_dotenv
-
-load_dotenv()
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
-MODEL_NAME = "gpt-4.1-mini"  
-MAX_CHUNK_TOKENS = 5000
-TEMPERATURE = 0.2
+MODEL_NAME = "gpt-4o-mini"
+
+MAX_TOKENS = 500

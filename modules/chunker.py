@@ -1,36 +1,32 @@
 import tiktoken
-from config import MAX_CHUNK_TOKENS
 
-encoding = tiktoken.encoding_for_model("gpt-4")
+encoding = tiktoken.encoding_for_model("gpt-4o-mini")
+MAX_TOKENS = 500
+
 
 def count_tokens(text):
     return len(encoding.encode(text))
 
-def chunk_text(cleaned_pages):
+
+def create_chunks(text):
+    paragraphs = [p.strip() for p in text.split(" ") if p.strip()]
+
     chunks = []
-    current_chunk = []
+    current = []
     current_tokens = 0
-    chunk_id = 1
 
-    for page in cleaned_pages:
-        page_tokens = count_tokens(page["cleaned_text"])
+    for p in paragraphs:
+        tokens = count_tokens(p)
 
-        if current_tokens + page_tokens > MAX_CHUNK_TOKENS:
-            chunks.append({
-                "chunk_id": chunk_id,
-                "text": "\n".join(current_chunk)
-            })
-            chunk_id += 1
-            current_chunk = []
+        if current_tokens + tokens > MAX_TOKENS:
+            chunks.append(" ".join(current))
+            current = []
             current_tokens = 0
 
-        current_chunk.append(page["cleaned_text"])
-        current_tokens += page_tokens
+        current.append(p)
+        current_tokens += tokens
 
-    if current_chunk:
-        chunks.append({
-            "chunk_id": chunk_id,
-            "text": "\n".join(current_chunk)
-        })
+    if current:
+        chunks.append(" ".join(current))
 
-    return chunks
+    return [{"chunk_id": i+1, "text": c} for i, c in enumerate(chunks)]

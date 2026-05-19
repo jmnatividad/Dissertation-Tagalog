@@ -8,11 +8,15 @@ def preprocess_text(pages):
     for page_data in pages:
         doc = nlp(page_data["text"])
 
-        cleaned_text = " ".join([token.text for token in doc if not token.is_space])
+        tokens = [
+            token.text.lower()
+            for token in doc
+            if not token.is_space
+        ]
 
         cleaned_pages.append({
             "page": page_data["page"],
-            "cleaned_text": cleaned_text
+            "cleaned_text": " ".join(tokens)
         })
 
     return cleaned_pages
