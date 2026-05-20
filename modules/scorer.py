@@ -47,13 +47,19 @@ MGA PANUNTUNAN:
 OUTPUT FORMAT (JSON LAMANG):
 
 {
-  "chunk_id": "id ng chunk",
-  "scores": {
-    "nilalaman": number,
-    "organisasyon": number,
-    "gamit_ng_wika": number,
-    "mekaniks": number
-  },
+  "chunks": [
+    {
+      "chunk_id": "id ng chunk",
+      "scores": {
+        "nilalaman": number,
+        "organisasyon": number,
+        "gamit_ng_wika": number,
+        "mekaniks": number
+      },
+      "overall_score": number
+    }
+  ],
+
   "overall_score": number,
   "feedback": "Tagalog feedback",
   "justification": "Maikling paliwanag kung bakit ibinigay ang score"
@@ -65,14 +71,16 @@ MGA TAGUBILIN:
 - Ang feedback at justification ay dapat nasa wikang Filipino.
 - Huwag lalampas sa 3–5 pangungusap ang feedback.
 - Dapat malinaw, diretso, at may mungkahi para sa pagpapabuti.
-- Ang overall_score ay dapat eksaktong suma ng apat (4) na kategorya:
+- Ang overall_score sa bawat chunk ay dapat eksaktong suma ng apat (4) na kategorya:
   nilalaman + organisasyon + gamit_ng_wika + mekaniks
-- Ang "overall_score" ay ang kabuuang suma ng lahat ng category scores.
-- Ito ay isang (1) value lamang bawat chunk.
+- Ang "overall_score" sa bawat chunk ay isang (1) value lamang.
 - Hindi ito maaaring i-average o i-scale — eksaktong suma lamang.
 
-FORMULA:
+- Ang FINAL overall_score (sa labas ng chunks) ay ang kabuuang average o pinagsamang resulta ng lahat ng chunks (depende sa evaluator design), ngunit dapat malinaw na hiwalay sa per-chunk scores.
+
+FORMULA (per chunk):
 overall_score = nilalaman + organisasyon + gamit_ng_wika + mekaniks
+
 
 
 ESSAY:

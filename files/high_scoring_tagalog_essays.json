@@ -1,0 +1,32 @@
+[
+  {
+    "id": "HIGH_01",
+    "title": "Edukasyon bilang Instrumento ng Pagbabago",
+    "text": "Ang edukasyon ay nagsisilbing mahalagang instrumento ng pagbabago sa lipunan. Sa pamamagitan nito, nahuhubog ang kakayahan ng isang indibidwal na mag-isip nang kritikal at kumilos nang may pananagutan. Ito rin ang nagiging pundasyon ng pag-unlad ng ekonomiya at kaalaman ng mamamayan."
+  },
+  {
+    "id": "HIGH_02",
+    "title": "Teknolohiya at Makabagong Lipunan",
+    "text": "Sa pag-unlad ng teknolohiya, mabilis na nagbago ang paraan ng komunikasyon at pamumuhay ng tao. Ang internet at digital na sistema ay nagbigay ng mas mabilis na access sa impormasyon, ngunit kaakibat nito ang hamon ng tamang paggamit at seguridad ng datos."
+  },
+  {
+    "id": "HIGH_03",
+    "title": "Kalusugan at Pamumuhay",
+    "text": "Ang kalusugan ay isa sa pinakamahalagang yaman ng tao. Ang pagkakaroon ng malusog na pangangatawan ay nakakatulong upang maging produktibo sa araw-araw na gawain. Ang wastong nutrisyon, ehersisyo, at tamang pahinga ay mahalaga sa pagpapanatili nito."
+  },
+  {
+    "id": "HIGH_04",
+    "title": "Pamilya bilang Haligi ng Lipunan",
+    "text": "Ang pamilya ang itinuturing na pangunahing institusyon ng lipunan. Dito nagsisimula ang paghubog ng ugali, pagpapahalaga, at pagkatao ng isang indibidwal. Ang matatag na pamilya ay nagbubunga ng responsableng mamamayan."
+  },
+  {
+    "id": "HIGH_05",
+    "title": "Pagbabago ng Klima",
+    "text": "Ang pagbabago ng klima ay isa sa pinakamalaking hamon sa kasalukuyang panahon. Ang patuloy na pagtaas ng temperatura at pagkasira ng kalikasan ay may malawak na epekto sa buhay ng tao at mga ekosistema sa mundo."
+  },
+  {
+    "id": "HIGH_06",
+    "title": "Pagkakaisa ng Mamamayan",
+    "text": "Ang pagkakaisa ng mamamayan ay mahalaga upang makamit ang kaunlaran ng isang bansa. Sa pamamagitan ng pagtutulungan at pagkakaroon ng iisang layunin, mas nagiging epektibo ang paglutas ng mga suliraning panlipunan."
+  }
+]

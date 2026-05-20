@@ -1,5 +1,5 @@
 from modules.pdf_extractor import extract_pdf_text
-from modules.preprocess_calamancy import preprocess_text
+from modules.preprocess import preprocess_text
 from modules.cleaner import clean_text
 from modules.chunker import create_chunks
 from modules.scorer import score_chunk
